@@ -47,7 +47,7 @@ env:
 
 jobs:
   wrt_core:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Projects
         uses: actions/checkout@main
@@ -86,18 +86,8 @@ jobs:
           sudo -E apt -yqq autoclean
           sudo -E apt -yqq clean
           sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
-          # 验证 ncurses 头文件和库是否存在
-          ls -l /usr/include/ncurses.h || echo "⚠️ ncurses.h not found"
-          ls -l /usr/lib/x86_64-linux-gnu/libncurses.so || echo "⚠️ libncurses.so not found"
-
-          # 为防止路径检测失败，显式声明路径
-          echo "export CFLAGS='-I/usr/include'" >> $GITHUB_ENV
-          echo "export LDFLAGS='-L/usr/lib/x86_64-linux-gnu'" >> $GITHUB_ENV
           sudo -E systemctl daemon-reload
           sudo -E timedatectl set-timezone "Asia/Shanghai"
-      - name: Verify ncurses
-        run: |
-          echo "#include <ncurses.h>" | gcc -xc - -lncurses -o /tmp/test_ncurses && echo "✅ ncurses is working!"
 
       - name: Initialization Values
         run: |
