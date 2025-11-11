@@ -4,6 +4,7 @@
 sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
 
 CFG_FILE="./package/base-files/files/bin/config_generate"
+DEF_FILE="package/lean/default-settings/files/zzz-default-settings"
 #修改默认IP地址
 sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
 #修改默认主机名
@@ -11,6 +12,9 @@ sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
 #修改默认时区
 sed -i "s/timezone='.*'/timezone='CST-8'/g" $CFG_FILE
 sed -i "/timezone='.*'/a\\\t\t\set system.@system[-1].zonename='Asia/Shanghai'" $CFG_FILE
+
+#change default password
+sed -i "s#root:\$1\$V4UetPzk\$CYXluq4wUazHjmCDBCqXF.#root:$1$nfGf52jV$dS.0l1UrFPQhqStvpjYHn0#g" $DEF_FILE
 
 if [[ $WRT_URL == *"lede"* ]]; then
 	LEDE_FILE=$(find ./package/lean/autocore/ -type f -name "index.htm")
